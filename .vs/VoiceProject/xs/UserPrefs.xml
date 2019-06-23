@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{05DB9627-AB93-6573-012A-F47C79072454}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Manager/AccountManager.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Manager/AccountManager.cs" Line="50" Column="29" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="6251b082-e874-41cc-8f11-abe262d316cf" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

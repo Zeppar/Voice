@@ -1,0 +1,62 @@
+[
+	{
+		"type" : "music1",
+		"url": "/music/冥想音乐",
+		"name": "冥想音乐"
+	},
+	{
+		"type" : "music2",
+		"url": "/music/全脑开发大师",
+		"name": "全脑开发大师"
+	},
+	{
+		"type" : "music3",
+		"url": "/music/中国五行音乐",
+		"name": "中国五行音乐"
+	},
+	{
+		"type" : "music4",
+		"url": "/music/自定义音乐",
+		"name": "自定义音乐"
+	},
+	{
+		"type" : "music5",
+		"url": "/music/双脑共振音乐",
+		"name": "双脑共振音乐"
+	},
+	{
+		"type" : "music6",
+		"url": "/music/深度睡眠音乐",
+		"name": "深度睡眠音乐"
+	},
+	{
+		"type" : "music7",
+		"url": "/music/放松减压音乐",
+		"name": "放松减压音乐"
+	},
+	{
+		"type" : "music8",
+		"url": "/music/a脑波音乐",
+		"name": "a脑波音乐"
+	},
+	{
+		"type" : "music9",
+		"url": "/music/纯音乐",
+		"name": "纯音乐"
+	},
+	{
+		"type" : "music10",
+		"url": "/music/催眠减压音乐",
+		"name": "催眠减压音乐"
+	},
+	{
+		"type" : "music11",
+		"url": "/music/大自然背景音乐",
+		"name": "大自然背景音乐"
+	},
+	{
+		"type" : "music12",
+		"url": "/music/解忧音乐",
+		"name": "解忧音乐"
+	}
+]
