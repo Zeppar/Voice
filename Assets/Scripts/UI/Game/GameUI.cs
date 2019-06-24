@@ -31,6 +31,7 @@ public class GameUI : MonoBehaviour {
     public Sprite game6SucSp;
     public Sprite game6NorSp;
     public FallSpawner fallSpawner;
+    private float fallTimer = 0;
     public Image paintImg;
 
     private AudioClip micRecord;
@@ -61,6 +62,16 @@ public class GameUI : MonoBehaviour {
     public Text heartText;
     public Text oxyText;
 
+    public Button breatheModeBtn;
+    public GameObject breatheMsgBg;
+    public Text breatheMsgText;
+    public Sprite[] breatheModeSp;
+    public Animator breatheAnim;
+    private bool isBreatheModeNormal = true;
+
+    public GameObject desertSlider;
+    public Image desertSliderInner;
+
     private int sucTime = 0;
     private float timer = 0;
     private int lineIndex = 0;
@@ -79,6 +90,8 @@ public class GameUI : MonoBehaviour {
 
     public PaintInfo paintInfo = new PaintInfo();
 
+    private float desertTimer = 0;
+
     private void Awake() {
         if(instance == null) {
             instance = this;
@@ -89,9 +102,33 @@ public class GameUI : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        desertSlider.SetActive(!GameController.manager.isPaint && GameController.manager.levelMan.selectInfo.index == 1);
 
         backBtn.onClick.AddListener(() => {
             SceneManager.LoadScene(1);
+            if (GameController.manager.isPaint || GameController.manager.levelMan.selectInfo.index == 2 || GameController.manager.levelMan.selectInfo.index == 5)
+                GameController.manager.enterFromGame = false;
+            else
+                GameController.manager.enterFromGame = true;
+        });
+
+        breatheModeBtn.onClick.AddListener(() => {
+            isBreatheModeNormal = !isBreatheModeNormal;
+            if(isBreatheModeNormal) {
+                breatheModeBtn.GetComponent<Image>().sprite = breatheModeSp[0];
+                breatheModeBtn.GetComponentInChildren<Text>().text = "均等模式";
+                breatheMsgBg.SetActive(true);
+                breatheMsgText.text = "当前模式:均等模式";
+                breatheAnim.speed = 1.0f;
+            } else {
+                breatheModeBtn.GetComponent<Image>().sprite = breatheModeSp[1];
+                breatheModeBtn.GetComponentInChildren<Text>().text = "舒缓模式";
+                breatheMsgBg.SetActive(true);
+                breatheMsgText.text = "当前模式:舒缓模式";
+                breatheAnim.speed = 0.6f;
+            }
+            StopCoroutine("HideBreatheMsg");
+            StartCoroutine("HideBreatheMsg");
         });
 
 
@@ -109,6 +146,11 @@ public class GameUI : MonoBehaviour {
         }
     }
 
+    private IEnumerator HideBreatheMsg() {
+        yield return new WaitForSecondsRealtime(3.0f);
+        breatheMsgBg.SetActive(false);
+    }
+
     private void InitPaint() {
         paintCameraImg.gameObject.SetActive(true);
         freePaintUI.gameObject.SetActive(true);
@@ -119,6 +161,7 @@ public class GameUI : MonoBehaviour {
     private void InitGame() {
         timer = 0;
         sucTime = 0;
+        fallTimer = 0;
         switch (GameController.manager.levelMan.selectInfo.index) {
             case 0:
                 ballImg.gameObject.SetActive(true);
@@ -150,11 +193,14 @@ public class GameUI : MonoBehaviour {
                     + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
                     info.type = 0;
                     info.result = info.name + "\n" + GameController.manager.accountMan.selfInfo.name + "\n" + GameController.manager.levelMan.selectInfo.name + "\n" + r;
+                    info.username = GameController.manager.accountMan.selfInfo.username;
                     GameController.manager.reportMan.AddReport(info);
                     SceneManager.LoadScene(1);
+                    GameController.manager.enterFromGame = false;
                 });
                 paintExitBtn.onClick.AddListener(() => {
                     SceneManager.LoadScene(1);
+                    GameController.manager.enterFromGame = false;
                 });
                 break;
             default:
@@ -185,6 +231,7 @@ public class GameUI : MonoBehaviour {
         voiceSlider.fillAmount = Mathf.Lerp(voiceSlider.fillAmount, value, 0.1f);
 
         timer += Time.deltaTime;
+        fallTimer += Time.deltaTime;
 
         if (!GameController.manager.isPaint && GameController.manager.levelMan.selectInfo.index != 5 && timer >= 600.0f) {
             SoundManager.manager.PlayMusicByPath("09006");
@@ -197,8 +244,10 @@ public class GameUI : MonoBehaviour {
                 + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
                 info.type = 0;
                 info.result = info.name + "\n" + GameController.manager.accountMan.selfInfo.name + "\n" + GameController.manager.levelMan.selectInfo.name + "\n" + r; ;
+                info.username = GameController.manager.accountMan.selfInfo.username;
                 GameController.manager.reportMan.AddReport(info);
                 SceneManager.LoadScene(1);
+                GameController.manager.enterFromGame = true;
             });
             gameEnd = true;
             return;
@@ -212,19 +261,23 @@ public class GameUI : MonoBehaviour {
                     ballImg.transform.localScale = new Vector3(scale, scale, 1.0f);
                     break;
                 case 1:
-                    volumeParam = Mathf.Lerp(volumeParam, value, 0.02f);
-                    int index = (int)Mathf.Clamp(volumeParam * 10, 0, 3);
+                    //volumeParam = Mathf.Lerp(volumeParam, value, 0.02f);
+                    int index = Mathf.Clamp((int)(desertTimer / 3), 0, 3);
+                    desertSliderInner.fillAmount = index / 3.0f;
                     backgroundImg.sprite = game2Sps[index];
                     break;
                 case 2:
                     // no end
                     break;
                 case 3:
-                    volumeParam = Mathf.Lerp(volumeParam, value * 80, 0.02f);
+                    volumeParam = Mathf.Lerp(volumeParam, value * 80, 0.008f);
                     windMillImg.transform.Rotate(new Vector3(0, 0, 1), volumeParam);
                     break;
                 case 4:
-                    fallSpawner.UpdateFallGo(value);
+                    if (fallTimer > 1.0f) {
+                        fallTimer -= 1.0f;
+                        fallSpawner.UpdateFallGo(value);
+                    }
                     break;
                 case 5:
                     paintTimeText.text = Util.SecToTimeString(timer);
@@ -242,23 +295,32 @@ public class GameUI : MonoBehaviour {
                 noVoiceTimer = 0;
                 noVoiceTimes = 0;
                 showScoreTimer = 0;
+                desertTimer += Time.deltaTime;
             } else if(value < 0.006){
-                showScoreTimer += Time.deltaTime;
-                if (showScoreTimer > 1.0f) {
-                    if (startVoice) {
-                        ShowScore(maxVolume);
-                        if (maxVolume > 0.6f) {
-                            sucTime += 1;
-                        } else {
-                            sucTime = 0;
+                if (noVoiceTimer > 20.0f) {
+                    desertTimer -= Time.deltaTime;
+                    desertTimer = Math.Max(0, desertTimer);
+                }
+                if (GameController.manager.levelMan.selectInfo.index != 1) {
+                    showScoreTimer += Time.deltaTime;
+                    if (showScoreTimer > 1.0f) {
+                        if (startVoice) {
+                            ShowScore(maxVolume);
+                            if (maxVolume > 0.6f) {
+                                sucTime += 1;
+                                if (GameController.manager.levelMan.selectInfo.index == 0)
+                                    ballImg.GetComponent<Animator>().SetTrigger("boom");
+                            } else {
+                                sucTime = 0;
+                            }
+                            maxVolume = -1.0f;
+                            if (!GameController.manager.isPaint && GameController.manager.levelMan.selectInfo.index == 6) {
+                                backgroundImg.sprite = game6NorSp;
+                            }
                         }
-                        maxVolume = -1.0f;
-                        if (!GameController.manager.isPaint && GameController.manager.levelMan.selectInfo.index == 6) {
-                            backgroundImg.sprite = game6NorSp;
-                        }
+                        startVoice = false;
+                        showScoreTimer = 0;
                     }
-                    startVoice = false;
-                    showScoreTimer = 0;
                 }
 
 
@@ -268,34 +330,38 @@ public class GameUI : MonoBehaviour {
                 } else {
                     if (!stopGame)
                         noVoiceTimer += Time.deltaTime;
-                    if (noVoiceTimer > 5.0f) {
-                        noVoiceTimer = 0;
-                        noVoiceTimes++;
-                        stopGame = true;
-                        StopCoroutine("ResetStopFlag");
-                        StartCoroutine("ResetStopFlag");
-                        if (noVoiceTimes == 3) {
-                            SoundManager.manager.PlayMusicByPath(GameController.manager.accountMan.selfInfo.sex.ToString()
-                    + "9005");
-                            gameEnd = true;
-                            string r = resultList[UnityEngine.Random.Range(0, 6)];
-                            GameController.manager.infoAlert.ShowWithText(r, () => {
-                                // save TODO
-                                ReportInfo info = new ReportInfo();
-                                DateTime time = DateTime.Now;
-                                info.name = time.Year.ToString() + "-" + time.Month.ToString("00") + "-" + time.Day.ToString("00") + " "
-                                + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
-                                info.type = 0;
-                                info.result = info.name + "\n" + GameController.manager.accountMan.selfInfo.name + "\n" + GameController.manager.levelMan.selectInfo.name + "\n" + r; ;
-                                GameController.manager.reportMan.AddReport(info);
-                                SceneManager.LoadScene(1);
-                            });
-                            StopCoroutine("EndGameOperation");
-                            StartCoroutine("EndGameOperation");
-                            return;
-                        } else {
-                            SoundManager.manager.PlayMusicByPath(GameController.manager.accountMan.selfInfo.sex.ToString() + GameController.manager.voiceType.ToString()
-                    + "00" + UnityEngine.Random.Range(0, 6));
+                    if (GameController.manager.levelMan.selectInfo.index != 1) {
+                        if (noVoiceTimer > 5.0f) {
+                            noVoiceTimer = 0;
+                            noVoiceTimes++;
+                            stopGame = true;
+                            StopCoroutine("ResetStopFlag");
+                            StartCoroutine("ResetStopFlag");
+                            if (noVoiceTimes == 3) {
+                                SoundManager.manager.PlayMusicByPath(GameController.manager.accountMan.selfInfo.sex.ToString()
+                        + "9005");
+                                gameEnd = true;
+                                string r = resultList[UnityEngine.Random.Range(0, 6)];
+                                GameController.manager.infoAlert.ShowWithText(r, () => {
+                                    // save TODO
+                                    ReportInfo info = new ReportInfo();
+                                    DateTime time = DateTime.Now;
+                                    info.name = time.Year.ToString() + "-" + time.Month.ToString("00") + "-" + time.Day.ToString("00") + " "
+                                    + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
+                                    info.type = 0;
+                                    info.username = GameController.manager.accountMan.selfInfo.username;
+                                    info.result = info.name + "\n" + GameController.manager.accountMan.selfInfo.name + "\n" + GameController.manager.levelMan.selectInfo.name + "\n" + r; ;
+                                    GameController.manager.reportMan.AddReport(info);
+                                    SceneManager.LoadScene(1);
+                                    GameController.manager.enterFromGame = true;
+                                });
+                                StopCoroutine("EndGameOperation");
+                                StartCoroutine("EndGameOperation");
+                                return;
+                            } else {
+                                SoundManager.manager.PlayMusicByPath(GameController.manager.accountMan.selfInfo.sex.ToString() + GameController.manager.voiceType.ToString()
+                        + "00" + UnityEngine.Random.Range(0, 6));
+                            }
                         }
                     }
                 }
@@ -317,9 +383,11 @@ public class GameUI : MonoBehaviour {
                     info.name = time.Year.ToString() + "-" + time.Month.ToString("00") + "-" + time.Day.ToString("00") + " "
                     + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
                     info.type = 0;
+                    info.username = GameController.manager.accountMan.selfInfo.username;
                     info.result = info.name + "\n" + GameController.manager.accountMan.selfInfo.name + "\n" + GameController.manager.levelMan.selectInfo.name + "\n" + r; ;
                     GameController.manager.reportMan.AddReport(info);
                     SceneManager.LoadScene(1);
+                    GameController.manager.enterFromGame = true;
                 });
             }
         }

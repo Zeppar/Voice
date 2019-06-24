@@ -1,12 +1,25 @@
 ﻿<Properties StartupConfiguration="{05DB9627-AB93-6573-012A-F47C79072454}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Manager/AccountManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UI/Index/StudyUI.cs">
     <Files>
-      <File FileName="Assets/Scripts/Manager/AccountManager.cs" Line="50" Column="29" />
+      <File FileName="Assets/Scripts/UI/Index/PaintUI.cs" Line="23" Column="46" />
+      <File FileName="Assets/Scripts/UI/Index/UserItem.cs" Line="23" Column="48" />
+      <File FileName="Assets/Scripts/UI/Index/ReportUI.cs" Line="57" Column="42" />
+      <File FileName="Assets/Scripts/UI/Index/UserListUI.cs" Line="85" Column="26" />
+      <File FileName="Assets/Scripts/UI/Index/IndexUI.cs" Line="175" Column="46" />
+      <File FileName="Assets/Scripts/Manager/GameController.cs" Line="28" Column="21" />
+      <File FileName="Assets/Scripts/Manager/ReportManager.cs" Line="69" Column="41" />
+      <File FileName="Assets/Scripts/UI/Common/InfoAlert.cs" Line="8" Column="30" />
+      <File FileName="Assets/Scripts/UI/Index/SubjectUI.cs" Line="25" Column="12" />
+      <File FileName="Assets/Scripts/UI/Index/IndexUICtrl.cs" Line="32" Column="1" />
+      <File FileName="Assets/Scripts/UI/Game/GameUI.cs" Line="265" Column="62" />
+      <File FileName="Assets/Scripts/UI/Index/MusicUI.cs" Line="30" Column="31" />
+      <File FileName="Assets/Scripts/Manager/AccountManager.cs" Line="35" Column="63" />
+      <File FileName="Assets/Scripts/UI/Index/StudyUI.cs" Line="30" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="6251b082-e874-41cc-8f11-abe262d316cf" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="768478b8-2c7a-43f4-bd89-275bafeeef3a" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

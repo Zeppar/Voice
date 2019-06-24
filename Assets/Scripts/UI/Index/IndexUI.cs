@@ -10,8 +10,7 @@ public class IndexUI : MonoBehaviour {
         Setting,
         Level,
         Voice,
-        Avatar,
-        Question
+        Avatar
     }
     [Header("Common")]
     public Button questionBtn;
@@ -25,6 +24,7 @@ public class IndexUI : MonoBehaviour {
     public Button subjectBtn;
     public Button paintBtn;
     public Button reportBtn;
+    public Button reportBtnAdmin;
     public Button breatheBtn;
     public Button avatarBtn;
 
@@ -40,18 +40,20 @@ public class IndexUI : MonoBehaviour {
 
     [Header("Avatar")]
     public Text nameText;
-    public Transform avatarBtnParent;
-    public AvatarBtn avatarBtnPrefab;
+    public Text quatoText;
+    public AvatarUI avatarUI;
     public static AvatarBtn selectAvatar;
     AvatarBtn lastAvatar = null;
 
     private IndexPageType curPageType = IndexPageType.Main;
 
+    public QuestionUI questionUI;
+
 
     private void Start() {
         questionBtn.onClick.AddListener(() => {
-            SetPageType(IndexPageType.Question);
             SoundManager.manager.PlayMusicByPath(GameController.manager.accountMan.selfInfo.sex + "9001");
+            questionUI.gameObject.SetActive(true);
         });
         settingBtn.onClick.AddListener(() => {
             SetPageType(IndexPageType.Setting);
@@ -75,11 +77,14 @@ public class IndexUI : MonoBehaviour {
             IndexUICtrl.instance.SetPageType(PageType.Subject);
         });
         paintBtn.onClick.AddListener(() => {
-            GameController.manager.isPaint = true;
-            SceneManager.LoadScene(2);
+            IndexUICtrl.instance.SetPageType(PageType.Paint);
         });
         reportBtn.onClick.AddListener(() => {
             IndexUICtrl.instance.SetPageType(PageType.Report);
+        });
+        reportBtnAdmin.onClick.AddListener(() => {
+            //IndexUICtrl.instance.SetPageType(PageType.Report);
+            IndexUICtrl.instance.SetPageType(PageType.UserList);
         });
         breatheBtn.onClick.AddListener(() => {
             GameController.manager.levelMan.selectInfo = new LevelInfo();
@@ -91,13 +96,17 @@ public class IndexUI : MonoBehaviour {
         backBtn.onClick.AddListener(() => {
             if (curPageType == IndexPageType.Setting) {
                 SettingUI setting = pages[(int)IndexPageType.Setting].GetComponent<SettingUI>();
-                if(setting.PageIdx == 0) {
+                if (setting.PageIdx == 0) {
                     SetPageType(IndexPageType.Main);
                     GameController.manager.accountMan.UpdateAccount(GameController.manager.accountMan.selfInfo);
                 } else {
                     setting.ConfirmPassword();
                 }
-            } else {
+            } else if (curPageType == IndexPageType.Avatar) {
+                avatarUI.OnBackBtnClick(() => {
+                    SetPageType(IndexPageType.Main);
+                });
+            } else { 
                 SetPageType(IndexPageType.Main);
             }
         });
@@ -116,32 +125,45 @@ public class IndexUI : MonoBehaviour {
 
         InitSelectGame();
         InitAvatar();
+        InitOperation();
 
+        if(GameController.manager.curIdentityType == IdentityType.Admin) {
+            avatarBtn.interactable = false;
+        }
+
+        if(GameController.manager.enterFromGame) {
+            SetPageType(IndexPageType.Level);
+        }
+
+    }
+
+    void InitAvatar() {
+        if (GameController.manager.curIdentityType == IdentityType.User) {
+            avatarBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Avatar/avatar" + GameController.manager.accountMan.selfInfo.avatar);
+        } else {
+            avatarBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Avatar/avatarAdmin");
+        }
+    }
+
+    void InitOperation() {
+        reportBtn.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.User);
+        reportBtnAdmin.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.Admin);
+        voiceBtn.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.User);
+        subjectBtn.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.User);
+        paintBtn.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.User);
+        breatheBtn.gameObject.SetActive(GameController.manager.curIdentityType == IdentityType.User);
     }
 
     void InitSelectGame() {
         Util.DeleteChildren(levelItemParent);
         for (int i = 0; i < GameController.manager.levelMan.levelInfos.Count; i++) {
+            if (i == 2 || i == 5)
+                continue;
             LevelItem item = Instantiate(levelItemPrefab) as LevelItem;
             item.SetContent(GameController.manager.levelMan.levelInfos[i]);
             item.transform.SetParent(levelItemParent, false);
         }
     }
-
-    void InitAvatar() {
-        nameText.text = GameController.manager.accountMan.selfInfo.name;
-        Util.DeleteChildren(avatarBtnParent);
-        for (int i = 0; i < Util.avatarCount; i++) {
-            AvatarBtn item = Instantiate(avatarBtnPrefab) as AvatarBtn;
-            item.SetContent(i + 1, () => {
-                SetPageType(IndexPageType.Main);
-            });
-            item.transform.SetParent(avatarBtnParent, false);
-        }
-        avatarBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Avatar/avatar" + GameController.manager.accountMan.selfInfo.avatar);
-
-    }
-
    
 
     void SetPageType(IndexPageType pageType) {
@@ -161,5 +183,7 @@ public class IndexUI : MonoBehaviour {
             lastAvatar = selectAvatar;
             avatarBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Avatar/avatar" + selectAvatar.avatarIdx);
         }
+        nameText.text = GameController.manager.accountMan.selfInfo.name;
+        quatoText.text = GameController.manager.accountMan.selfInfo.quato;
     }
 }

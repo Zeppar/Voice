@@ -8,7 +8,9 @@ public enum PageType {
     Subject,
     Report,
     Music,
-    Study
+    Study,
+    Paint,
+    UserList
 }
 
 public class IndexUICtrl : MonoBehaviour
@@ -27,6 +29,7 @@ public class IndexUICtrl : MonoBehaviour
     }
 
     private void Start() {
+
         GameController.manager.isPaint = false;
     }
 

@@ -10,6 +10,7 @@ public class ReportInfo {
     public string name;
     public int type; // 0 for pressure 1 for subject 2 for paint
     public string result;
+    public string username;
 }
 
 public class ReportManager {
@@ -39,6 +40,15 @@ public class ReportManager {
         GameController.manager.StartCoroutine(LoadReport(wwwpath));
     }
 
+    public List<ReportInfo> GetInfos(int type, string username) {
+        List<ReportInfo> l = new List<ReportInfo>();
+        for (int i = 0; i < GameController.manager.reportMan.reportDict[type].Count; i++) {
+            if (GameController.manager.reportMan.reportDict[type][i].username == username.Trim())
+                l.Add(GameController.manager.reportMan.reportDict[type][i]);
+        }
+        return l;
+    }
+
     IEnumerator LoadReport(string path) {
         //www load streaming folder need add 'file://' at the begining of the url
         WWW www = new WWW(path);
@@ -53,6 +63,11 @@ public class ReportManager {
             info.name = (string)dt["name"];
             info.type = (int)dt["type"];
             info.result = (string)dt["result"];
+            try {
+                info.username = (string)dt["username"];
+            } catch {
+                info.username = "shabi";
+            }
             if (!reportDict.ContainsKey(info.type))
                 reportDict[info.type] = new List<ReportInfo>();
             reportDict[info.type].Add(info);
@@ -96,6 +111,8 @@ public class ReportManager {
                 w.Write(list[i].type);
                 w.WritePropertyName("result");
                 w.Write(list[i].result);
+                w.WritePropertyName("username");
+                w.Write(list[i].username);
                 w.WriteObjectEnd();
             }
         }

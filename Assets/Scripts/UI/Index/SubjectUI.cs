@@ -22,7 +22,6 @@ public class SubjectUI : MonoBehaviour {
                 IndexUICtrl.instance.SetPageType(PageType.Index);
             }
         });
-
         InitSubject();
     }
 

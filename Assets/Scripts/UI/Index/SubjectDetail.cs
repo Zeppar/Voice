@@ -82,6 +82,7 @@ public class SubjectDetail : MonoBehaviour {
         + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00");
         info.type = 1;
         info.result = result;
+        info.username = GameController.manager.accountMan.selfInfo.username;
         GameController.manager.reportMan.AddReport(info);
     }
 

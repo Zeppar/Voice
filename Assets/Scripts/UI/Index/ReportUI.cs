@@ -26,27 +26,32 @@ public class ReportUI : MonoBehaviour
                 paintBtn.gameObject.SetActive(true);
                 foreGo.SetActive(true);
             } else {
-                IndexUICtrl.instance.SetPageType(PageType.Index);
+                if(GameController.manager.curIdentityType == IdentityType.User)
+                    IndexUICtrl.instance.SetPageType(PageType.Index);
+                else
+                    IndexUICtrl.instance.SetPageType(PageType.UserList);
                 selectItem = null;
                 lastItem = null;
             }
         });
         pressureBtn.onClick.AddListener(() => {
-            ShowReportList(0);
+            ShowReportList(0, GameController.manager.accountMan.selfInfo.username);
         });
         reportBtn.onClick.AddListener(() => {
-            ShowReportList(1);
+            ShowReportList(1, GameController.manager.accountMan.selfInfo.username);
         });
         paintBtn.onClick.AddListener(() => {
-            ShowReportList(2);
+            ShowReportList(2, GameController.manager.accountMan.selfInfo.username);
         });
-        pressureBtn.onClick.Invoke();
+
+        if(GameController.manager.curIdentityType == IdentityType.User)
+            ShowReportList(0, GameController.manager.accountMan.selfInfo.username);
     }
 
-    public void ShowReportList(int type) {
+    public void ShowReportList(int type, string username) {
         Util.DeleteChildren(reportParent);
         if(GameController.manager.reportMan.reportDict.ContainsKey(type)) {
-            var list = GameController.manager.reportMan.reportDict[type];
+            var list = GameController.manager.reportMan.GetInfos(type, username);
             for (int i = 0; i < list.Count; i++) {
                 ReportItem item = Instantiate(reportPrefab);
                 item.SetContent(list[i]);

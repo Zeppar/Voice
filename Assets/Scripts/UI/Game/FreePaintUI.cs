@@ -51,12 +51,21 @@ public class FreePaintUI : MonoBehaviour {
 
 
         Util.DeleteChildren(colorParent);
-        List<Color> colors = new List<Color>() { Color.red, Color.green, Color.blue, Color.black, Color.gray, Color.yellow, Color.magenta };
+        List<Color> colors = new List<Color>() { Util.ColorFromString("#ea4631"),
+                                                Util.ColorFromString("#ffb820"),
+                                                Util.ColorFromString("#4aed5a"),
+                                                Util.ColorFromString("#32a3ea"),
+                                                Util.ColorFromString("#8657ff"),
+                                                Util.ColorFromString("#3a48ff"),
+                                                Util.ColorFromString("#32e4ea"),
+                                                Util.ColorFromString("#ea32a3"),
+                                                Util.ColorFromString("#000000"),
+                                                Util.ColorFromString("#ffffff")};
         for(int i = 0; i < colors.Count; i++) {
             ColorItem item = Instantiate(colorPrefab);
             item.SetContent(colors[i]);
             item.transform.SetParent(colorParent, false);
-            if (i == 0)
+            if (i == 8)
                 selectItem = item;
 
         }
@@ -78,6 +87,7 @@ public class FreePaintUI : MonoBehaviour {
         info.type = 2;
         info.result = time.Year.ToString() + "-" + time.Month.ToString("00") + "-" + time.Day.ToString("00") + " "
         + time.Hour.ToString("00") + ":" + time.Minute.ToString("00") + ":" + time.Second.ToString("00") + ".png";
+        info.username = GameController.manager.accountMan.selfInfo.username;
         GameController.manager.reportMan.AddReport(info);
         string path = "";
         string filePath = "";

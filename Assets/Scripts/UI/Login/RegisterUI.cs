@@ -76,6 +76,7 @@ public class RegisterUI : MonoBehaviour {
                 if (suc) {
                     SoundManager.manager.StopMusic();
                     SceneManager.LoadScene(1);
+                    GameController.manager.enterFromGame = false;
                     GameController.manager.curFingerType = FingerPageType.Other;
                 }
             } else {

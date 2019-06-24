@@ -38,6 +38,8 @@ public class GameController : MonoBehaviour {
     public FingerPageType curFingerType = FingerPageType.Login;
     public IdentityType curIdentityType;
 
+    public bool enterFromGame = true;
+
     private void Awake() {
         if(manager == null) {
             manager = this;

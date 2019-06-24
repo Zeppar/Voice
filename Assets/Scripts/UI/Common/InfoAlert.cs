@@ -12,8 +12,7 @@ public class InfoAlert : MonoBehaviour {
 
     private void Start() {
         confirmBtn.onClick.AddListener(() => {
-            if (callBack != null)
-                callBack();
+            callBack?.Invoke();
             gameObject.SetActive(false);
         });
     }

@@ -45,6 +45,7 @@ public class LoginUICtrl : MonoBehaviour {
                 if (GameController.manager.accountMan.ValidateAccount(usernameInput.text.Trim(), passwordInput.text.Trim())) {
                     SoundManager.manager.StopMusic();
                     SceneManager.LoadScene(1);
+                    GameController.manager.enterFromGame = false;
                 } else
                     GameController.manager.infoAlert.ShowWithText("用户名或密码错误");
             } else {

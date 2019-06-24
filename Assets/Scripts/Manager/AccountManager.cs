@@ -14,6 +14,7 @@ public class AccountInfo {
     public string name;
     public int avatar;
     public string finger;
+    public string quato;
 }
 
 public class AccountManager {
@@ -55,6 +56,7 @@ public class AccountManager {
         info.name = "admin";
         info.avatar = 1;
         info.finger = "";
+        info.quato = "请输入签名";
         accountDic.Add(info.username, info);
     }
 
@@ -80,6 +82,11 @@ public class AccountManager {
             } catch {
                 info.finger = "";
             }
+            try {
+                info.quato = (string)dt["quato"];
+            } catch {
+                info.quato = "请输入签名";
+            }
             accountDic.Add(info.username, info);
         }
         AddAdmin();
@@ -95,8 +102,11 @@ public class AccountManager {
             return false;
         }
         selfInfo = accountDic[username];
-        if (username == "admin")
+        if (username == "admin") {
             GameController.manager.curIdentityType = IdentityType.Admin;
+        } else {
+            GameController.manager.curIdentityType = IdentityType.User;
+        }
         return true;
     }
 
@@ -149,6 +159,8 @@ public class AccountManager {
             w.Write(info.avatar);
             w.WritePropertyName("finger");
             w.Write(info.finger);
+            w.WritePropertyName("quato");
+            w.Write(info.quato);
             w.WriteObjectEnd();
         }
         w.WriteArrayEnd();

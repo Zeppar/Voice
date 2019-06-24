@@ -23,4 +23,21 @@ public static class Util {
         return ts.Hours.ToString("00") + ":" + ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
     }
 
+    public static Color ColorFromString(string s) {
+        // string must be #xxxxxxxx
+        int R = int.Parse(s.Substring(1, 2),
+            System.Globalization.NumberStyles.HexNumber);
+        int G = int.Parse(s.Substring(3, 2),
+            System.Globalization.NumberStyles.HexNumber);
+        int B = int.Parse(s.Substring(5, 2),
+            System.Globalization.NumberStyles.HexNumber);
+        try {
+            int A = int.Parse(s.Substring(7, 2),
+                System.Globalization.NumberStyles.HexNumber);
+            return new Color(R / 255f, G / 255f, B / 255f, A / 255f);
+        } catch {
+            return new Color(R / 255f, G / 255f, B / 255f, 1f);
+        }
+    }
+
 }

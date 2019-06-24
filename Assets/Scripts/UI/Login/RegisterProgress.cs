@@ -4,25 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class RegisterProgress : MonoBehaviour {
-    public List<GameObject> gos;
+    public Sprite[] sps;
+    public Image selfImage;
 
     public void SetProgress(int index) {
-        int changeColorCount = 0;
         switch (index) {
             case 0:
-                changeColorCount = 2;
+                selfImage.sprite = sps[0];
                 break;
             case 1:
-                changeColorCount = 4;
+                selfImage.sprite = sps[1];
                 break;
             case 2:
-                changeColorCount = 5;
+                selfImage.sprite = sps[2];
                 break;
             default:
                 break;
-        }
-        for (int i = 0; i < changeColorCount; i++) {
-            gos[i].GetComponent<Image>().color = new Color(25 / 255.0f, 164 / 255.0f, 231 / 255.0f, 1.0f);
         }
     }
 }
